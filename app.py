@@ -26,6 +26,14 @@ def process(input_list, quality=80):
     return out_files, out_images
 
 
+def swap_to_gallery(images):
+    return (
+        gr.update(value=images, visible=True),
+        gr.update(visible=True),
+        gr.update(visible=False),
+    )
+
+
 def run(server_name="127.0.0.1", server_port=7860):
     with gr.Blocks() as app:
         gr.Markdown(
@@ -38,16 +46,15 @@ def run(server_name="127.0.0.1", server_port=7860):
 
         with gr.Row(equal_height=False):
             with gr.Column():
+                files = gr.Files(
+                    label="Drag 1 or more photos of your face",
+                    file_types=["image"],
+                )
+                uploaded_files = gr.Gallery(
+                    label="Your images", visible=False, columns=4, height=250
+                )
                 inputs = [
-                    gr.Gallery(
-                        label="Input images",
-                        show_label=True,
-                        elem_id="gallery",
-                        object_fit="contain",
-                        height="auto",
-                        columns=4,
-                        # min_width=100,
-                    ),
+                    uploaded_files,
                     gr.Slider(
                         minimum=1,
                         maximum=100,
@@ -68,10 +75,16 @@ def run(server_name="127.0.0.1", server_port=7860):
                         object_fit="contain",
                         height="auto",
                         columns=4,
+                        # height=125,
                     ),
                 ]
-
+        files.upload(
+            fn=swap_to_gallery,
+            inputs=files,
+            outputs=[uploaded_files, btn, files],
+        )
         btn.click(process, inputs=inputs, outputs=outputs)
+    #
     app.queue().launch(
         server_name=server_name, server_port=server_port, share=False
     )
