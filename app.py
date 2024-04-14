@@ -63,7 +63,7 @@ def run(server_name="127.0.0.1", server_port=7860):
                         label="Quality",
                     ),
                 ]
-                btn = gr.Button("Converted WebP", variant="primary")
+                btn = gr.Button("Run Convert", variant="primary")
 
             with gr.Column():
                 outputs = [
