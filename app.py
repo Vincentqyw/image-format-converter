@@ -4,6 +4,11 @@ from PIL import Image
 
 
 def get_supported_formats():
+    """
+    A function that retrieves the supported formats of images.
+    Returns:
+        The supported image formats as a list.
+    """
     supported_formats = Image.registered_extensions()
     return supported_formats
 
@@ -11,7 +16,20 @@ def get_supported_formats():
 SUPPORTED_FORMATS = get_supported_formats()
 
 
-def convert_format(input_image: str = None, ext=".webp", quality=80):
+def convert_format(
+    input_image: str = None, ext: str = ".webp", quality: int = 80
+):
+    """
+    A function that converts an input image to a specified format with a given quality.
+
+    Parameters:
+        input_image (str): The path to the input image file.
+        ext (str, optional): The extension for the output format. Defaults to ".webp".
+        quality (int, optional): The quality of the output image. Defaults to 80.
+
+    Returns:
+        tuple: A tuple containing the reopened image in RGBA format and the path to the saved image file.
+    """
     file_path = Path("caches") / "{}{}".format(Path(input_image).stem, ext)
     file_path.parent.mkdir(parents=True, exist_ok=True)
     img = Image.open(input_image)
@@ -21,7 +39,9 @@ def convert_format(input_image: str = None, ext=".webp", quality=80):
         format = SUPPORTED_FORMATS[ext]
     if format is None:
         gr.Error(
-            f"Unsupported image format. Supported formats: {', '.join(SUPPORTED_FORMATS)}"
+            "Unsupported image format. Supported formats: {}".format(
+                ", ".join(SUPPORTED_FORMATS)
+            )
         )
     img.save(file_path, format, quality=quality)
 
@@ -31,7 +51,18 @@ def convert_format(input_image: str = None, ext=".webp", quality=80):
     return img_reopen, str(file_path)
 
 
-def process(input_list, ext=".webp", quality=80):
+def process(input_list: list[tuple], ext: str = ".webp", quality: int = 80):
+    """
+    A function that processes a list of images by converting them to a specified format with a given quality.
+
+    Parameters:
+        input_list (list[tuple]): A list of tuples containing the paths to the input image files.
+        ext (str, optional): The extension for the output format. Defaults to ".webp".
+        quality (int, optional): The quality of the output images. Defaults to 80.
+
+    Returns:
+        tuple: A tuple containing lists of file paths and reopened images in RGBA format.
+    """
     out_files = []
     out_images = []
     for path in input_list:
@@ -41,7 +72,10 @@ def process(input_list, ext=".webp", quality=80):
     return out_files, out_images
 
 
-def swap_to_gallery(images):
+def swap_to_gallery(images: list):
+    """
+    A function that swaps to a gallery, taking a list of images as input.
+    """
     return (
         gr.update(value=images, visible=True),
         gr.update(visible=True),
@@ -49,13 +83,17 @@ def swap_to_gallery(images):
     )
 
 
-def download_files(files):
-    for file in files:
-        breakpoint()
-        gr.DownloadButton(visible=True, value=file)
+def run(server_name: str = "127.0.0.1", server_port: int = 7860):
+    """
+    A function that runs the WebP Converter app, allowing users to upload images, set quality, and convert them to WebP format.
 
+    Parameters:
+        server_name (str, optional): The server name where the app is hosted. Defaults to "127.0.0.1".
+        server_port (int, optional): The port number for the server. Defaults to 7860.
 
-def run(server_name="127.0.0.1", server_port=7860):
+    Returns:
+        None
+    """
     with gr.Blocks() as app:
         gr.Markdown(
             """
