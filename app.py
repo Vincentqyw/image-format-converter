@@ -97,8 +97,8 @@ def run(server_name: str = "127.0.0.1", server_port: int = 7860):
     with gr.Blocks() as app:
         gr.Markdown(
             """
-            # WebP Converter
-            Upload one or more image files and convert it to WebP format with adjustable quality.
+            # Image Format Converter
+            Upload one or more image files and convert it to specified format with adjustable quality.
             ![]('F:/gradio-apps/image_to_webp/caches/1.webp')
             """
         )
@@ -110,7 +110,7 @@ def run(server_name: str = "127.0.0.1", server_port: int = 7860):
                     file_types=["image"],
                 )
                 uploaded_files = gr.Gallery(
-                    label="Your images", visible=False, columns=4, height=250
+                    label="Your images", visible=False, columns=4, height="auto"
                 )
                 with gr.Row():
                     quality_slider = gr.Slider(
@@ -134,7 +134,9 @@ def run(server_name: str = "127.0.0.1", server_port: int = 7860):
                         ],
                         value=".webp",
                     )
-                proc_btn = gr.Button("Run Convert", variant="primary")
+                with gr.Row():
+                    proc_btn = gr.Button("Run Convert", variant="primary")
+                    reset_btn = gr.Button("Clear Images", variant="secondary")
 
             with gr.Column():
                 output_file = gr.File(label="Converted WebP")
@@ -165,6 +167,7 @@ def run(server_name: str = "127.0.0.1", server_port: int = 7860):
             outputs=[uploaded_files, proc_btn, files],
         )
         proc_btn.click(process, inputs=inputs, outputs=outputs)
+        reset_btn.click(lambda: None, None, uploaded_files, queue=False)
     app.queue().launch(
         server_name=server_name, server_port=server_port, share=False
     )
