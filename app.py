@@ -47,7 +47,7 @@ def run(server_name="127.0.0.1", server_port=7860):
         with gr.Row(equal_height=False):
             with gr.Column():
                 files = gr.Files(
-                    label="Drag 1 or more photos of your face",
+                    label="Drag 1 or more images",
                     file_types=["image"],
                 )
                 uploaded_files = gr.Gallery(
@@ -60,7 +60,7 @@ def run(server_name="127.0.0.1", server_port=7860):
                         maximum=100,
                         value=80,
                         step=1,
-                        label="Quality",
+                        label="Image Quality",
                     ),
                 ]
                 btn = gr.Button("Run Convert", variant="primary")
