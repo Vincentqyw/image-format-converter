@@ -2,7 +2,6 @@ import gradio as gr
 from pathlib import Path
 from PIL import Image
 
-
 def get_supported_formats():
     """
     A function that retrieves the supported formats of images.
@@ -135,8 +134,8 @@ def run(server_name: str = "127.0.0.1", server_port: int = 7860):
                         value=".webp",
                     )
                 with gr.Row():
-                    proc_btn = gr.Button("Run Convert", variant="primary")
                     reset_btn = gr.Button("Clear Images", variant="secondary")
+                    proc_btn = gr.Button("Run Convert", variant="primary")
 
             with gr.Column():
                 output_file = gr.File(label="Converted WebP")
